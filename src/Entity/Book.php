@@ -29,6 +29,7 @@ class Book implements TranslatableInterface
     /**
      * @ORM\ManyToOne(targetEntity=Author::class, inversedBy="books")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"book"})
      */
     private $author;
 

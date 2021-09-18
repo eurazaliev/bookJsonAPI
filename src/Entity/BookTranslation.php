@@ -44,4 +44,14 @@ class BookTranslation implements TranslationInterface
 
         return $this;
     }
+
+    /**
+     * Returns entity, that this translation is mapped to.
+     * @Groups({"book"})
+     */
+    public function getBook()
+    {
+        return $this->translatable;
+    }
+
 }

@@ -24,7 +24,7 @@ class Author
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"author"})
+     * @Groups({"author", "book"})
      */
     private $name;
 
