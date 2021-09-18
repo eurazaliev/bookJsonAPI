@@ -53,10 +53,12 @@ class BookController extends AbstractController
     public function getSearch(Request $request, RequestChecker $requestChecker, MySerializer $serializer, PaginatorInterface $paginator): JsonResponse
     {
         try {
-	    /*
-		тут я не буду в тестовом задании делать полноценный поисковый движок
-		ищет тупо по LIKE, выдает ограниченный набор данных с пейждинацией
-	    */
+            /*
+            тут я не буду в тестовом задании делать полноценный поисковый движок
+            ищет тупо по LIKE, выдает ограниченный набор данных с пейждинацией
+            можно указать нужную страницу и сколько айтемов на странице
+            по умолчанию - 5 поз. на странице и показываем страницу 1
+            */
 
             $em = $this->getDoctrine()->getManager();
             $data = $requestChecker->validate($request->getContent(), SearchRequest::class);
@@ -64,9 +66,9 @@ class BookController extends AbstractController
             $qb = $em->createQueryBuilder();
             $qb->select('bt')
                 ->from('App\Entity\BookTranslation', 'bt')
-		->where('bt.name LIKE :query')
-	    ;
-	    $qb->setParameter('query', '%' . $data->getQueryString() . '%');
+                >where('bt.name LIKE :query')
+            ;
+            $qb->setParameter('query', '%' . $data->getQueryString() . '%');
 
             $pagination = $paginator->paginate(
                 $qb,
