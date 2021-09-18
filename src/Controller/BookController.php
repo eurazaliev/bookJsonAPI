@@ -93,4 +93,26 @@ class BookController extends AbstractController
         return (new JsonResponse())->setContent($serializer->getSerializer()->serialize($result, 'json', ['groups' => ['book']]))->setStatusCode(Response::HTTP_OK);
     }
 
+    /**
+     * @Route("/{lang}/book/{id}/", name="bookGetByLang", methods={"GET"}, defaults={"lang" = "en"}, requirements={"lang" = "en|ru", "id"="\d+"})
+     */
+    public function getReq(int $id, string $lang, Request $request, RequestChecker $requestChecker, MySerializer $serializer, PaginatorInterface $paginator): JsonResponse
+    {
+        try {
+            $em = $this->getDoctrine()->getManager();
+
+            $item = $em->getRepository(Book::class)->find($id);
+            if(!$item)
+                throw new BadRequestHttpException('Item not found: ' . $id);
+
+            $result = new \StdClass();
+            $result->id = $item->getId();
+            if(!empty($name = $item->translate($lang)->getName()))
+        	$result->Name = $name;
+            else $result->Name = 'We are sorry but there is no title in ' . $lang . ' for the book: ' . $id . '.';
+        } catch (\Throwable $e) {
+            return new JsonResponse(['errors' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+        return (new JsonResponse())->setContent($serializer->getSerializer()->serialize($result, 'json'))->setStatusCode(Response::HTTP_OK);
+    }
 }
