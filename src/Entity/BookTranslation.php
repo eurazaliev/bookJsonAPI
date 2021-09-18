@@ -7,6 +7,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 use Knp\DoctrineBehaviors\Contract\Entity\TranslationInterface;
 use Knp\DoctrineBehaviors\Model\Translatable\TranslationTrait;
+
+use Symfony\Component\Serializer\Annotation\Groups;
+
 /**
  * @ORM\Entity
  */
@@ -27,6 +30,9 @@ class BookTranslation implements TranslationInterface
      */
     private $name;
 
+    /**
+     * @Groups({"book"})
+     */
     public function getName(): ?string
     {
         return $this->name;
