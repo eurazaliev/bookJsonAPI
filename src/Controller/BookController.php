@@ -33,10 +33,10 @@ class BookController extends AbstractController
                 throw new BadRequestHttpException('Incorrect author');
 
             $item = new Book;
-	    $item->setAuthor($author);
+            $item->setAuthor($author);
 
-	    $item->translate('en')->setName($data->getNameEn());
-	    $item->translate('ru')->setName($data->getNameRu());
+            $item->translate('en')->setName($data->getNameEn());
+            $item->translate('ru')->setName($data->getNameRu());
             $item->mergeNewTranslations();
 
             $em->persist($item);
@@ -66,7 +66,7 @@ class BookController extends AbstractController
             $qb = $em->createQueryBuilder();
             $qb->select('bt')
                 ->from('App\Entity\BookTranslation', 'bt')
-                >where('bt.name LIKE :query')
+                ->where('bt.name LIKE :query')
             ;
             $qb->setParameter('query', '%' . $data->getQueryString() . '%');
 
