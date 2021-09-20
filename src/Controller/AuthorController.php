@@ -35,7 +35,7 @@ class AuthorController extends AbstractController
         } catch (\Throwable $e) {
             return new JsonResponse(['errors' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
-        return (new JsonResponse())->setContent($serializer->getSerializer()->serialize($item, 'json', ['groups' => ['author']]))->setStatusCode(Response::HTTP_OK);
+        return (new JsonResponse())->setContent($serializer->getSerializer()->serialize($item, 'json', ['groups' => ['author']]))->setStatusCode(Response::HTTP_CREATED);
     }
 
 }

@@ -44,7 +44,7 @@ class BookController extends AbstractController
         } catch (\Throwable $e) {
             return new JsonResponse(['errors' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
-        return (new JsonResponse())->setContent($serializer->getSerializer()->serialize($item, 'json', ['groups' => ['book']]))->setStatusCode(Response::HTTP_OK);
+        return (new JsonResponse())->setContent($serializer->getSerializer()->serialize($item, 'json', ['groups' => ['book']]))->setStatusCode(Response::HTTP_CREATED);
     }
 
     /**
@@ -85,12 +85,12 @@ class BookController extends AbstractController
                 'itemstotal' => $pagination->getTotalItemCount(),
                 'exp' => $pagination->getPaginationData(),
             ];
-
+            $status = $pagination->getPaginationData()['pageCount'] > 1 ? Response::HTTP_PARTIAL_CONTENT : Response::HTTP_OK;
 
         } catch (\Throwable $e) {
             return new JsonResponse(['errors' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
-        return (new JsonResponse())->setContent($serializer->getSerializer()->serialize($result, 'json', ['groups' => ['book']]))->setStatusCode(Response::HTTP_OK);
+        return (new JsonResponse())->setContent($serializer->getSerializer()->serialize($result, 'json', ['groups' => ['book']]))->setStatusCode($status);
     }
 
     /**
@@ -108,7 +108,7 @@ class BookController extends AbstractController
             $result = new \StdClass();
             $result->id = $item->getId();
             if(!empty($name = $item->translate($lang)->getName()))
-        	$result->Name = $name;
+                $result->Name = $name;
             else $result->Name = 'We are sorry but there is no title in ' . $lang . ' for the book: ' . $id . '.';
         } catch (\Throwable $e) {
             return new JsonResponse(['errors' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
