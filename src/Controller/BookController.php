@@ -48,7 +48,7 @@ class BookController extends AbstractController
     }
 
     /**
-     * @Route("/book/search/", name="bookSearch", methods={"GET"})
+     * @Route("/book/search/", name="bookSearch", methods={"POST"})
     */
     public function getSearch(Request $request, RequestChecker $requestChecker, MySerializer $serializer, PaginatorInterface $paginator): JsonResponse
     {
@@ -85,7 +85,11 @@ class BookController extends AbstractController
                 'itemstotal' => $pagination->getTotalItemCount(),
                 'exp' => $pagination->getPaginationData(),
             ];
-            $status = $pagination->getPaginationData()['pageCount'] > 1 ? Response::HTTP_PARTIAL_CONTENT : Response::HTTP_OK;
+            if($pagination->getTotalItemCount() === 0) {
+                $status = Response::HTTP_NOT_FOUND;
+            } else {
+                $status = $pagination->getPaginationData()['pageCount'] > 1 ? Response::HTTP_PARTIAL_CONTENT : Response::HTTP_OK;
+            }
 
         } catch (\Throwable $e) {
             return new JsonResponse(['errors' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
@@ -111,7 +115,7 @@ class BookController extends AbstractController
                 $result->Name = $name;
             else $result->Name = 'We are sorry but there is no title in ' . $lang . ' for the book: ' . $id . '.';
         } catch (\Throwable $e) {
-            return new JsonResponse(['errors' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['errors' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
         return (new JsonResponse())->setContent($serializer->getSerializer()->serialize($result, 'json'))->setStatusCode(Response::HTTP_OK);
     }
